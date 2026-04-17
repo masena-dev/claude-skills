@@ -1,0 +1,17 @@
+{
+  "description": "Masena Go + TS pattern enforcement",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/enforce-masena-patterns.py",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

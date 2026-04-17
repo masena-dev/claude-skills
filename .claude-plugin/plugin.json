@@ -1,0 +1,21 @@
+{
+  "name": "masena-skills",
+  "description": "Go and TypeScript engineering patterns for multi-tenant B2B SaaS. Prevents drift across projects with codegen workflows, RLS setup, event-driven patterns, and frontend BFF architecture.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Masena",
+    "url": "https://github.com/masena-dev"
+  },
+  "repository": "https://github.com/masena-dev/claude-skills",
+  "license": "MIT",
+  "keywords": [
+    "go",
+    "typescript",
+    "multi-tenant",
+    "rls",
+    "postgresql",
+    "nats",
+    "nextjs",
+    "react-query"
+  ]
+}
