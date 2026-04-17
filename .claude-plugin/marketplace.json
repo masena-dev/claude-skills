@@ -1,9 +1,16 @@
 {
+  "name": "masena-skills",
+  "description": "Claude Code skills for Masena engineering patterns",
+  "owner": {
+    "name": "Masena",
+    "url": "https://github.com/masena-dev"
+  },
   "plugins": [
     {
       "name": "masena-skills",
+      "description": "Go and TypeScript engineering patterns for multi-tenant B2B SaaS",
       "version": "0.1.0",
-      "description": "Go and TypeScript engineering patterns for multi-tenant B2B SaaS"
+      "source": "./"
     }
   ]
 }
