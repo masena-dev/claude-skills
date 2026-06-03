@@ -21,6 +21,7 @@ claude plugin install /path/to/claude-skills
 | `go-codegen-patterns` | sqlc + oapi-codegen generation workflow for Go services |
 | `go-multi-tenant-db` | Row-level security, tenant isolation, and pool setup for PostgreSQL |
 | `ts-nextjs-bff` | Next.js BFF conventions: route handlers, orval API client, React Query |
+| `api-designer` | OpenAPI 3.0 API design — endpoint conventions, schema composition, oapi-codegen extensions, public/private boundary |
 
 ## Enforcement Hook
 
