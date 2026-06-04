@@ -155,7 +155,7 @@ PostSummary:
 
 - **PascalCase** schema names: `BaseUser`, `PostSummary`, `CreatePostRequest`, `GetSpacePostsResponse`
 - **Snake_case** properties: `first_name`, `created_at`, `has_next_page`, `is_platform_content`
-- **Schema reuse with `readOnly`** is preferred over separate request/response schemas for the same entity. See [Request/Response Schema Reuse](#requestresponse-schema-reuse) below.
+- **Schema reuse with `readOnly`** vs separate request/response schemas: pick per the project's existing convention and what its generators support. See [Request/Response Schema Reuse](#requestresponse-schema-reuse) below.
 - **IDs**: `string` for slugs/usernames, `integer` with `format: int64` for numeric IDs
 - **Timestamps**: `type: string, format: date-time`
 - **Dates**: `type: string, format: date`
@@ -164,9 +164,11 @@ PostSummary:
 
 ## Request/Response Schema Reuse
 
-**Preferred**: Reuse one schema for both request and response, marking server-populated fields with `readOnly: true`.
+**First, match the project.** Check the existing `openapi.yaml`: if it already standardises on separate `Create<Entity>Request` / response schemas, follow that — consistency within a spec beats either pattern in the abstract. For greenfield resources where you're setting the convention, the reuse pattern below is a strong default *where the toolchain supports it* (see [Generator Configuration](#generator-configuration)).
 
-**Why**: Drift risk between separate request and response schemas is higher than the cost of one schema with `readOnly` markers. Generators handle the distinction correctly when configured.
+**The reuse pattern**: one schema for both request and response, marking server-populated fields with `readOnly: true`.
+
+**Why it's attractive**: lower drift risk — one source of truth instead of two schemas whose shared fields can silently diverge. **The catch**: the request/response distinction lives entirely in `readOnly` markers, and only some generators enforce it on the wire. Where the generator doesn't, the constraint is server-side only (see below).
 
 ### Pattern
 
@@ -241,6 +243,8 @@ export default defineConfig({
 });
 ```
 
+**swagger-typescript-api (TypeScript)**: does NOT strip `readOnly` fields from generated request types — they land in both request and response interfaces. So the "client can't send `readOnly` fields" guarantee does **not** hold under this generator. Treat schema reuse as a codegen/documentation convenience and enforce the constraint server-side (ignore `readOnly` fields on input). If you need the wire-level guarantee, use Orval or define separate request schemas.
+
 **oapi-codegen (Go)**: does NOT differentiate by `readOnly`. Generates one Go struct used for both request and response, with `readOnly` fields as `*Type` with `omitempty`. The handler is responsible for ignoring `readOnly` fields on inputs (validation pass or simply not reading them in create/update logic). This is a small discipline cost, not a generated-code disaster.
 
 ### When Separate Schemas Are Still Right
@@ -253,7 +257,9 @@ In these cases, define separate schemas explicitly. Do not allOf-compose them �
 
 ## Response Wrapping
 
-Single resource:
+**Whether to wrap is a project convention — match the existing spec.** Some projects wrap every response in an envelope (`{ message, <resource> }`); others return the resource or list directly and reserve a top-level `message` for errors only. Neither is more correct; pick whatever the host `openapi.yaml` already does and stay consistent. The examples below show the envelope style — drop the `message` field and wrapper object if the project returns bare resources.
+
+Single resource (envelope style):
 ```yaml
 GetPostResponse:
   required: [message, post]
